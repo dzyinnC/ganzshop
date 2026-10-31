@@ -1,0 +1,723 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Digital Marketplace</title>
+
+<style>
+:root {
+  --bg:#0b1020;
+  --surface:#151d32;
+  --surface2:#1c2740;
+  --primary:#8b5cf6;
+  --cyan:#22d3ee;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --border:#283650;
+  --green:#22c55e;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,Arial,sans-serif;
+}
+button,input,textarea,select {font:inherit}
+button {cursor:pointer}
+.container {max-width:1150px;margin:auto;padding:20px}
+header {
+  position:sticky;top:0;z-index:10;
+  background:rgba(11,16,32,.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(15px);
+}
+.nav {
+  max-width:1150px;margin:auto;padding:15px 20px;
+  display:flex;justify-content:space-between;
+  align-items:center;gap:15px;flex-wrap:wrap;
+}
+.logo {font-size:20px;font-weight:900}
+.logo span {color:var(--primary)}
+.navlinks {display:flex;gap:7px;flex-wrap:wrap}
+.navlinks button {
+  background:none;border:0;color:var(--muted);
+  padding:10px;border-radius:8px;
+}
+.navlinks button:hover,.navlinks button.active {
+  color:white;background:var(--surface2);
+}
+.primary {
+  background:linear-gradient(120deg,#8b5cf6,#6366f1);
+  border:0;color:white;padding:12px 18px;
+  border-radius:10px;font-weight:700;
+}
+.secondary {
+  background:var(--surface2);border:1px solid var(--border);
+  color:white;padding:11px 16px;border-radius:10px;
+}
+.hero {
+  margin-top:35px;padding:55px 35px;
+  border:1px solid var(--border);border-radius:22px;
+  background:radial-gradient(circle at 80% 20%,#49327d 0,transparent 40%),
+  linear-gradient(120deg,#17213c,#11172a);
+}
+.hero h1 {font-size:clamp(32px,6vw,55px);margin:0 0 15px}
+.hero h1 span {color:#b69aff}
+.hero p {color:var(--muted);max-width:600px;line-height:1.8}
+.eyebrow {color:var(--cyan);font-size:12px;letter-spacing:2px}
+.section {margin-top:55px}
+.section-title {display:flex;justify-content:space-between;align-items:center}
+.section-title p {color:var(--muted)}
+.grid {
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:18px;margin-top:20px;
+}
+.card {
+  background:var(--surface);border:1px solid var(--border);
+  padding:20px;border-radius:15px;
+  transition:.2s;
+}
+.card:hover {transform:translateY(-3px);border-color:var(--primary)}
+.card h3 {margin:10px 0}
+.card p {color:var(--muted);font-size:14px;line-height:1.6}
+.price {font-size:20px;font-weight:800;color:#c4b5fd}
+.category {font-size:11px;color:var(--cyan);text-transform:uppercase}
+.actions {display:flex;gap:10px;margin-top:15px}
+.actions button {flex:1}
+.page {display:none}
+.page.active {display:block}
+input,textarea,select {
+  width:100%;padding:13px;margin:7px 0 14px;
+  background:#0d1629;border:1px solid var(--border);
+  color:white;border-radius:9px;outline:none;
+}
+input:focus,textarea:focus,select:focus {
+  border-color:var(--primary);
+}
+label {font-size:13px;color:#cbd5e1}
+.formbox {
+  max-width:650px;margin:25px auto;
+  padding:25px;background:var(--surface);
+  border:1px solid var(--border);border-radius:16px;
+}
+.formbox h2 {margin-top:0}
+.summary {
+  background:#0d1629;border:1px solid var(--border);
+  padding:15px;border-radius:10px;margin-bottom:15px;
+}
+.row {display:flex;justify-content:space-between;gap:10px}
+.muted {color:var(--muted)}
+.badge {
+  display:inline-block;padding:5px 9px;
+  border-radius:20px;background:#33265c;color:#c4b5fd;
+  font-size:11px;
+}
+.empty {text-align:center;padding:50px 10px;color:var(--muted)}
+footer {
+  border-top:1px solid var(--border);
+  margin-top:70px;padding:30px 20px;text-align:center;
+  color:var(--muted);
+}
+.statgrid {
+  display:grid;grid-template-columns:repeat(3,1fr);gap:15px;
+}
+.stat {background:var(--surface);padding:20px;border-radius:13px}
+.stat strong {display:block;font-size:26px;margin-top:8px}
+.tablewrap {overflow-x:auto;margin-top:20px}
+table {width:100%;border-collapse:collapse;min-width:750px}
+td,th {padding:13px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
+th {color:var(--muted)}
+.smallbtn {padding:7px 10px;border-radius:7px;border:0;background:var(--primary);color:white}
+.toast {
+  position:fixed;bottom:20px;right:20px;z-index:99;
+  background:#26344f;padding:15px 20px;border-radius:10px;
+  display:none;max-width:90%;
+}
+@media(max-width:750px) {
+  .grid {grid-template-columns:repeat(2,1fr)}
+  .statgrid {grid-template-columns:1fr}
+  .hero {padding:35px 22px}
+}
+@media(max-width:480px) {
+  .grid {grid-template-columns:1fr}
+  .nav {justify-content:center}
+  .navlinks {justify-content:center}
+  .container {padding:15px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">DIGI<span>MARKET.</span></div>
+    <div class="navlinks">
+      <button onclick="showPage('home')" class="active">Home</button>
+      <button onclick="showPage('editing')">Editing</button>
+      <button onclick="showPage('joki')">Open Joki</button>
+      <button onclick="showPage('store')">Digital Store</button>
+      <button onclick="showPage('admin')">Admin</button>
+    </div>
+    <button class="secondary" onclick="showPage('checkout')">
+      Keranjang <span id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main class="container">
+
+<!-- HOME -->
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="eyebrow">DIGITAL SERVICE & CREATIVE STORE</div>
+    <h1>Make Your Ideas<br><span>Come to Life.</span></h1>
+    <p>
+      Butuh jasa editing, layanan joki digital,
+      atau produk digital berkualitas?
+      Semua kebutuhanmu tersedia di satu tempat.
+    </p>
+    <button class="primary" onclick="showPage('editing')">
+      Explore Services →
+    </button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <h2>Layanan Kami</h2>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h2>🎬</h2>
+        <h3>Jasa Editing</h3>
+        <p>Video, foto, desain grafis dan kebutuhan kreatif.</p>
+        <button class="secondary" onclick="showPage('editing')">Lihat layanan</button>
+      </div>
+      <div class="card">
+        <h2>⚡</h2>
+        <h3>Open Joki</h3>
+        <p>Layanan bantuan pengerjaan digital sesuai kebutuhan.</p>
+        <button class="secondary" onclick="showPage('joki')">Lihat layanan</button>
+      </div>
+      <div class="card">
+        <h2>🛍️</h2>
+        <h3>Digital Store</h3>
+        <p>Template, preset, ebook dan berbagai produk digital.</p>
+        <button class="secondary" onclick="showPage('store')">Belanja sekarang</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Layanan Unggulan</h2>
+    <div id="featured" class="grid"></div>
+  </div>
+</section>
+
+<!-- EDITING -->
+<section id="editing" class="page">
+  <div class="section">
+    <h1>Open Jasa Editing</h1>
+    <p class="muted">Pilih layanan editing yang kamu butuhkan.</p>
+    <div id="editingList" class="grid"></div>
+  </div>
+</section>
+
+<!-- JOKI -->
+<section id="joki" class="page">
+  <div class="section">
+    <h1>Open Joki</h1>
+    <p class="muted">Pilih layanan bantuan digital yang tersedia.</p>
+    <div id="jokiList" class="grid"></div>
+  </div>
+</section>
+
+<!-- STORE -->
+<section id="store" class="page">
+  <div class="section">
+    <h1>Digital Store</h1>
+    <p class="muted">Produk digital siap digunakan.</p>
+    <div id="productList" class="grid"></div>
+  </div>
+</section>
+
+<!-- CHECKOUT -->
+<section id="checkout" class="page">
+  <div class="formbox">
+    <h2>Checkout Pesanan</h2>
+
+    <div class="summary">
+      <h3>Ringkasan Pesanan</h3>
+      <div id="cartItems"></div>
+      <hr style="border-color:#283650">
+      <div class="row">
+        <strong>Total</strong>
+        <strong id="cartTotal" class="price">Rp0</strong>
+      </div>
+    </div>
+
+    <form id="orderForm">
+      <label>Nama lengkap</label>
+      <input id="customerName" required maxlength="100"
+        placeholder="Nama kamu">
+
+      <label>Email</label>
+      <input id="customerEmail" type="email"
+        placeholder="email@example.com">
+
+      <label>Nomor WhatsApp</label>
+      <input id="customerPhone" required
+        placeholder="08xxxxxxxxxx">
+
+      <label>Metode pembayaran</label>
+      <select id="paymentMethod">
+        <option value="TRANSFER">Transfer Bank</option>
+        <option value="QRIS">QRIS Manual</option>
+      </select>
+
+      <label>Detail pesanan / Deadline / Catatan</label>
+      <textarea id="orderNotes" rows="4"
+        placeholder="Tuliskan detail kebutuhanmu..."></textarea>
+
+      <label>File lampiran (opsional, maksimal 5 MB)</label>
+      <input id="attachment" type="file"
+        accept=".jpg,.jpeg,.png,.webp,.pdf,.zip,.mp4">
+
+      <button class="primary" type="submit" style="width:100%">
+        Buat Pesanan Sekarang
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section id="admin" class="page">
+  <div class="section">
+    <div class="formbox" id="adminLogin">
+      <h2>Admin Login</h2>
+      <label>PIN Admin</label>
+      <input id="adminPin" type="password"
+        placeholder="Masukkan PIN">
+      <button class="primary" onclick="loginAdmin()">Login</button>
+    </div>
+
+    <div id="adminPanel" style="display:none">
+      <div class="row">
+        <h1>Dashboard Admin</h1>
+        <button class="secondary" onclick="logoutAdmin()">Logout</button>
+      </div>
+
+      <div class="statgrid">
+        <div class="stat">
+          <span class="muted">Total transaksi</span>
+          <strong id="statTransactions">0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Total pelanggan</span>
+          <strong id="statCustomers">0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Pendapatan terverifikasi</span>
+          <strong id="statRevenue">Rp0</strong>
+        </div>
+      </div>
+
+      <h2>Manajemen Transaksi</h2>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID Transaksi</th>
+              <th>Total</th>
+              <th>Pembayaran</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="transactionRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <strong>DIGIMARKET.</strong>
+  <p>Creative Digital Services & Digital Products</p>
+  <small>© 2026 All Rights Reserved.</small>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script>
+let catalog = {services:[],products:[]};
+let cart = [];
+let adminToken = null;
+
+const $ = id => document.getElementById(id);
+
+function money(n) {
+  return new Intl.NumberFormat('id-ID',{
+    style:'currency',currency:'IDR',
+    maximumFractionDigits:0
+  }).format(n || 0);
+}
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;',
+    '"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').style.display = 'block';
+  setTimeout(() => $('toast').style.display='none',3500);
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(x =>
+    x.classList.remove('active')
+  );
+  $(page).classList.add('active');
+
+  document.querySelectorAll('.navlinks button').forEach(x =>
+    x.classList.remove('active')
+  );
+
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  if(page === 'admin' && adminToken) loadAdmin();
+}
+
+function callServer(fn,args,onSuccess) {
+  google.script.run
+    .withSuccessHandler(onSuccess)
+    .withFailureHandler(err => {
+      toast(err.message || 'Terjadi kesalahan');
+    })[fn](...args);
+}
+
+// =========================
+// LOAD CATALOG
+// =========================
+
+function loadCatalog() {
+  callServer('getCatalog',[],data => {
+    catalog = data;
+
+    const editing = data.services.filter(
+      x => x.category.toLowerCase() === 'editing'
+    );
+    const joki = data.services.filter(
+      x => x.category.toLowerCase() === 'joki'
+    );
+
+    renderServices('editingList',editing);
+    renderServices('jokiList',joki);
+    renderProducts();
+    renderFeatured();
+  });
+}
+
+function serviceCard(x) {
+  return `
+    <div class="card">
+      <span class="category">${escapeHTML(x.category)}</span>
+      <h3>${escapeHTML(x.service_name)}</h3>
+      <p>${escapeHTML(x.description)}</p>
+      <div class="price">${money(x.price)}</div>
+      <p>Estimasi ${escapeHTML(x.estimated_days)} hari</p>
+      <button class="primary" style="width:100%"
+        onclick="addCart('SERVICE','${escapeHTML(x.service_id)}')">
+        Pesan Sekarang
+      </button>
+    </div>`;
+}
+
+function renderServices(id,items) {
+  $(id).innerHTML = items.length
+    ? items.map(serviceCard).join('')
+    : '<div class="empty">Belum ada layanan tersedia.</div>';
+}
+
+function renderProducts() {
+  const items = catalog.products || [];
+
+  $('productList').innerHTML = items.length
+    ? items.map(x => `
+      <div class="card">
+        <span class="category">${escapeHTML(x.category)}</span>
+        <h3>${escapeHTML(x.product_name)}</h3>
+        <p>${escapeHTML(x.description)}</p>
+        <div class="price">${money(x.price)}</div>
+        <p>Stok: ${escapeHTML(x.stock)}</p>
+        <button class="primary" style="width:100%"
+          onclick="addCart('PRODUCT','${escapeHTML(x.product_id)}')">
+          Beli Produk
+        </button>
+      </div>`).join('')
+    : '<div class="empty">Belum ada produk.</div>';
+}
+
+function renderFeatured() {
+  $('featured').innerHTML = catalog.services.slice(0,3)
+    .map(serviceCard).join('');
+}
+
+// =========================
+// CART
+// =========================
+
+function findItem(type,id) {
+  return type === 'SERVICE'
+    ? catalog.services.find(x => x.service_id === id)
+    : catalog.products.find(x => x.product_id === id);
+}
+
+function addCart(type,id) {
+  const item = findItem(type,id);
+  if(!item) return toast('Item tidak ditemukan');
+
+  const existing = cart.find(x =>
+    x.id === id && x.type === type
+  );
+
+  if(existing) existing.quantity++;
+  else cart.push({id,type,quantity:1});
+
+  renderCart();
+  toast('Item berhasil ditambahkan');
+}
+
+function removeCart(index) {
+  cart.splice(index,1);
+  renderCart();
+}
+
+function renderCart() {
+  let total = 0;
+
+  $('cartCount').textContent = cart.reduce(
+    (s,x) => s + x.quantity,0
+  );
+
+  $('cartItems').innerHTML = cart.length
+    ? cart.map((x,i) => {
+      const item = findItem(x.type,x.id);
+      if(!item) return '';
+
+      const name = item.service_name || item.product_name;
+      const sub = Number(item.price) * x.quantity;
+      total += sub;
+
+      return `
+        <div class="row" style="margin:12px 0">
+          <div>
+            <strong>${escapeHTML(name)}</strong>
+            <div class="muted">${x.quantity} x ${money(item.price)}</div>
+          </div>
+          <div>
+            ${money(sub)}
+            <button class="smallbtn"
+              onclick="removeCart(${i})">×</button>
+          </div>
+        </div>`;
+    }).join('')
+    : '<p class="empty">Keranjang masih kosong.</p>';
+
+  $('cartTotal').textContent = money(total);
+}
+
+// =========================
+// CHECKOUT
+// =========================
+
+async function getAttachment() {
+  const file = $('attachment').files[0];
+  if(!file) return null;
+
+  const allowed = [
+    'image/jpeg','image/png','image/webp',
+    'application/pdf','application/zip','video/mp4'
+  ];
+
+  if(!allowed.includes(file.type))
+    throw new Error('Format file tidak didukung');
+
+  if(file.size > 5 * 1024 * 1024)
+    throw new Error('Ukuran file maksimal 5 MB');
+
+  const base64 = await new Promise((resolve,reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  return {
+    name:file.name,
+    mimeType:file.type,
+    base64:base64
+  };
+}
+
+$('orderForm').addEventListener('submit',async e => {
+  e.preventDefault();
+
+  if(!cart.length) return toast('Keranjang masih kosong');
+
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.disabled = true;
+  btn.textContent = 'Memproses...';
+
+  try {
+    const attachment = await getAttachment();
+
+    const payload = {
+      name:$('customerName').value,
+      email:$('customerEmail').value,
+      whatsapp:$('customerPhone').value,
+      paymentMethod:$('paymentMethod').value,
+      notes:$('orderNotes').value,
+      attachment,
+      items:cart.map(x => ({
+        id:x.id,type:x.type,quantity:x.quantity
+      })),
+      type:cart.some(x => x.type === 'PRODUCT')
+        && cart.some(x => x.type === 'SERVICE')
+        ? 'MIXED'
+        : cart[0].type
+    };
+
+    google.script.run
+      .withSuccessHandler(result => {
+        cart = [];
+        renderCart();
+        e.target.reset();
+        btn.disabled = false;
+        btn.textContent = 'Buat Pesanan Sekarang';
+
+        const message =
+          `Halo Admin, saya sudah membuat pesanan.\n` +
+          `ID: ${result.transactionId}\n` +
+          `Total: ${money(result.total)}\n` +
+          `Mohon informasi pembayaran.`;
+
+        const wa = String(result.whatsapp || '')
+          .replace(/\D/g,'');
+
+        toast('Pesanan berhasil dibuat: ' + result.transactionId);
+
+        showPage('home');
+
+        if(wa) {
+          window.open(
+            'https://wa.me/' + wa + '?text=' +
+            encodeURIComponent(message),'_blank'
+          );
+        }
+      })
+      .withFailureHandler(err => {
+        btn.disabled = false;
+        btn.textContent = 'Buat Pesanan Sekarang';
+        toast(err.message || 'Gagal membuat pesanan');
+      })
+      .submitOrder(payload);
+
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = 'Buat Pesanan Sekarang';
+    toast(err.message);
+  }
+});
+
+// =========================
+// ADMIN
+// =========================
+
+function loginAdmin() {
+  const pin = $('adminPin').value;
+  if(!pin) return toast('Masukkan PIN');
+
+  callServer('adminLogin',[pin],result => {
+    adminToken = result.token;
+    $('adminLogin').style.display = 'none';
+    $('adminPanel').style.display = 'block';
+    $('adminPin').value = '';
+    loadAdmin();
+    toast('Login berhasil');
+  });
+}
+
+function logoutAdmin() {
+  adminToken = null;
+  $('adminPanel').style.display = 'none';
+  $('adminLogin').style.display = 'block';
+  toast('Berhasil logout');
+}
+
+function loadAdmin() {
+  if(!adminToken) return;
+
+  callServer('getAdminDashboard',[adminToken],data => {
+    $('statTransactions').textContent = data.totalTransactions;
+    $('statCustomers').textContent = data.totalCustomers;
+    $('statRevenue').textContent = money(data.totalRevenue);
+
+    $('transactionRows').innerHTML =
+      data.transactions.map(x => `
+        <tr>
+          <td>${escapeHTML(x.transaction_id)}</td>
+          <td>${money(x.total_amount)}</td>
+          <td>
+            <select id="pay-${escapeHTML(x.transaction_id)}">
+              ${['UNPAID','PAID','REJECTED'].map(v =>
+                `<option value="${v}" ${x.payment_status===v?'selected':''}>${v}</option>`
+              ).join('')}
+            </select>
+          </td>
+          <td>
+            <select id="status-${escapeHTML(x.transaction_id)}">
+              ${['PENDING','CONFIRMED','PROCESSING','REVISION','COMPLETED','CANCELLED'].map(v =>
+                `<option value="${v}" ${x.order_status===v?'selected':''}>${v}</option>`
+              ).join('')}
+            </select>
+          </td>
+          <td>
+            <button class="smallbtn"
+              onclick="saveTransaction('${escapeHTML(x.transaction_id)}')">
+              Simpan
+            </button>
+          </td>
+        </tr>
+      `).join('');
+  });
+}
+
+function saveTransaction(id) {
+  const changes = {
+    payment_status:$('pay-'+id).value,
+    order_status:$('status-'+id).value
+  };
+
+  callServer('updateTransaction',
+    [adminToken,id,changes],
+    () => {
+      toast('Transaksi berhasil diperbarui');
+      loadAdmin();
+    }
+  );
+}
+
+loadCatalog();
+renderCart();
+</script>
+</body>
+</html>
